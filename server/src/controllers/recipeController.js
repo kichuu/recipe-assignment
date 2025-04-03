@@ -1,8 +1,10 @@
 import axios from "axios";
 import Recipe from "../models/Recipe.js";
+import User from "../models/User.js";
 
 export const searchRecipes = async (req, res) => {
   try {
+    console.log(req.query);
     const { query } = req.query;
     const response = await axios.get(
       `https://api.spoonacular.com/recipes/complexSearch`,
