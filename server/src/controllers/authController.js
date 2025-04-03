@@ -17,27 +17,15 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-
-    if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ error: "JWT secret is not set" });
-    }
+    //set token to cookie
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-
-    res.cookie("token", token, {
-      httpOnly: false,
-      secure: req.secure || req.headers["x-forwarded-proto"] === "https", // Auto-detect HTTPS
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    res.json({ message: "Login successful", token });
+    res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
