@@ -20,6 +20,7 @@ export const searchRecipes = async (req, res) => {
 
 export const saveRecipe = async (req, res) => {
   try {
+    console.log(req.body);
     const { title, imageUrl, ingredients, instructions } = req.body;
     const recipe = new Recipe({
       title,
