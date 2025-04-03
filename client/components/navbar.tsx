@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
-import { useAlert } from "@/lib/alert-context"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+import { useAlert } from "@/lib/alert-context";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const router = useRouter()
-  const { showAlert } = useAlert()
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    setIsLoggedIn(!!token)
-  }, [pathname])
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    setIsLoggedIn(false)
-    showAlert("Logged out", "You have been logged out successfully", "success")
-    router.push("/")
-  }
+    localStorage.removeItem("token");
+    router.push("/");
+    setIsLoggedIn(false);
+    showAlert("Logged out", "You have been logged out successfully", "success");
+  };
 
   return (
     <nav className="bg-white shadow-sm">
@@ -36,7 +36,12 @@ export default function Navbar() {
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/" className={`hover:text-primary ${pathname === "/" ? "text-primary font-medium" : ""}`}>
+            <Link
+              href="/"
+              className={`hover:text-primary ${
+                pathname === "/" ? "text-primary font-medium" : ""
+              }`}
+            >
               Search
             </Link>
 
@@ -44,7 +49,11 @@ export default function Navbar() {
               <>
                 <Link
                   href="/saved-recipes"
-                  className={`hover:text-primary ${pathname === "/saved-recipes" ? "text-primary font-medium" : ""}`}
+                  className={`hover:text-primary ${
+                    pathname === "/saved-recipes"
+                      ? "text-primary font-medium"
+                      : ""
+                  }`}
                 >
                   Saved Recipes
                 </Link>
@@ -56,7 +65,9 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className={`hover:text-primary ${pathname === "/login" ? "text-primary font-medium" : ""}`}
+                  className={`hover:text-primary ${
+                    pathname === "/login" ? "text-primary font-medium" : ""
+                  }`}
                 >
                   Login
                 </Link>
@@ -69,7 +80,11 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
               {mobileMenuOpen ? <X /> : <Menu />}
             </Button>
           </div>
@@ -80,7 +95,9 @@ export default function Navbar() {
           <div className="md:hidden py-4 space-y-3">
             <Link
               href="/"
-              className={`block py-2 hover:text-primary ${pathname === "/" ? "text-primary font-medium" : ""}`}
+              className={`block py-2 hover:text-primary ${
+                pathname === "/" ? "text-primary font-medium" : ""
+              }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Search
@@ -90,12 +107,20 @@ export default function Navbar() {
               <>
                 <Link
                   href="/saved-recipes"
-                  className={`block py-2 hover:text-primary ${pathname === "/saved-recipes" ? "text-primary font-medium" : ""}`}
+                  className={`block py-2 hover:text-primary ${
+                    pathname === "/saved-recipes"
+                      ? "text-primary font-medium"
+                      : ""
+                  }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Saved Recipes
                 </Link>
-                <Button variant="ghost" onClick={handleLogout} className="w-full justify-start">
+                <Button
+                  variant="ghost"
+                  onClick={handleLogout}
+                  className="w-full justify-start"
+                >
                   Logout
                 </Button>
               </>
@@ -103,12 +128,18 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className={`block py-2 hover:text-primary ${pathname === "/login" ? "text-primary font-medium" : ""}`}
+                  className={`block py-2 hover:text-primary ${
+                    pathname === "/login" ? "text-primary font-medium" : ""
+                  }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Login
                 </Link>
-                <Link href="/register" className="block py-2" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  href="/register"
+                  className="block py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   <Button variant="default" className="w-full">
                     Register
                   </Button>
@@ -119,6 +150,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }
-

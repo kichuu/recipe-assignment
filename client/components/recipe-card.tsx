@@ -65,19 +65,19 @@ export default function RecipeCard({
         )}
       </CardContent>
       <CardFooter>
-        {!saved && onSave && (
-          <Button
-            onClick={(e) => {
-              e.stopPropagation(); // Prevents navigation when clicking save
-              onSave();
-            }}
-            variant="outline"
-            className="w-full"
-          >
-            <BookmarkIcon className="h-4 w-4 mr-2" />
-            Save Recipe
-          </Button>
-        )}
+        {/* {!saved && onSave && (
+          // <Button
+          //   onClick={(e) => {
+          //     e.stopPropagation(); // Prevents navigation when clicking save
+          //     onSave();
+          //   }}
+          //   variant="outline"
+          //   className="w-full"
+          // >
+          //   <BookmarkIcon className="h-4 w-4 mr-2" />
+          //   Save Recipe
+          // </Button>
+        )} */}
         {saved && (
           <Button variant="outline" className="w-full" disabled>
             <CheckIcon className="h-4 w-4 mr-2" />
