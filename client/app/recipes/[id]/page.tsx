@@ -18,6 +18,7 @@ interface Recipe {
 }
 
 export default function RecipeDetails() {
+  const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const params = useParams();
   const recipeId = params?.id as string;
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -33,7 +34,7 @@ export default function RecipeDetails() {
 
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/recipes/${recipeId}`
+          `${NEXT_PUBLIC_API_BASE_URL}/recipes/${recipeId}`
         );
         setRecipe(response.data);
       } catch (err) {
