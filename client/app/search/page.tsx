@@ -60,26 +60,47 @@ export default function Home() {
       if (!token) {
         showAlert(
           "Authentication required",
-          "Please login to save recipes",
+          "Please log in to save recipes",
           "info"
         );
         router.push("/login");
         return;
       }
 
+      // Check if the recipe is already saved (avoid duplicate saves)
+      const savedRecipes = JSON.parse(
+        localStorage.getItem("savedRecipes") || "[]"
+      );
+      const isAlreadySaved = savedRecipes.some(
+        (r: Recipe) => r.id === recipe.id
+      );
+
+      if (isAlreadySaved) {
+        showAlert("Info", "You have already saved this recipe.", "info");
+        return;
+      }
+
       await axios.post(
         `${NEXT_PUBLIC_API_BASE_URL}/recipes/save`,
         {
+          id: recipe.id,
           title: recipe.title,
-          imageUrl: recipe.image, // Use `image`, not `imageUrl`
-          ingredients: [], // Default to an empty array
-          instructions: "", // Default to an empty string
+          imageUrl: recipe.image,
+          ingredients: [],
+          instructions: "",
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      // Save recipe locally to prevent duplicate saves
+      localStorage.setItem(
+        "savedRecipes",
+        JSON.stringify([...savedRecipes, recipe])
+      );
+
       showAlert("Success", "Recipe saved successfully!", "success");
     } catch (error) {
+      console.error("Save Recipe Error:", error);
       showAlert("Error", "Failed to save recipe. Please try again.", "error");
     }
   };

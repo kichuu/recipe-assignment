@@ -10,9 +10,10 @@ import { authenticate } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/search", searchRecipes);
-router.get("/:id", getRecipeDetails); // New route for detailed recipe info
+router.get("/user", authenticate, getUserRecipes);
+
+router.get("/rec/:id", getRecipeDetails); // New route for detailed recipe info
 
 router.post("/save", authenticate, saveRecipe);
-router.get("/user", authenticate, getUserRecipes);
 
 export default router;

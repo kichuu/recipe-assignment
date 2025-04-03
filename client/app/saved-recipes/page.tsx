@@ -10,8 +10,9 @@ interface Recipe {
   _id: string;
   title: string;
   imageUrl: string;
+  spoonId: number;
   ingredients: string[];
-  instructions: string;
+  instructions: string[]; // Changed from string to string[]
 }
 
 export default function SavedRecipes() {
@@ -42,6 +43,7 @@ export default function SavedRecipes() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        console.log("data", response.data);
         setRecipes(response.data);
       } catch (error) {
         showAlert("Error", "Failed to fetch saved recipes", "error");
@@ -66,7 +68,13 @@ export default function SavedRecipes() {
           {recipes.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recipes.map((recipe) => (
-                <RecipeCard key={recipe._id} recipe={recipe} saved />
+                <div
+                  key={recipe.spoonId}
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/search/${recipe.spoonId}`)}
+                >
+                  <RecipeCard recipe={recipe} saved />
+                </div>
               ))}
             </div>
           ) : (

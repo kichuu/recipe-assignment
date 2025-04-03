@@ -17,7 +17,7 @@ interface Recipe {
   title: string;
   imageUrl: string;
   ingredients: string[];
-  instructions: string;
+  instructions: string[];
 }
 
 interface RecipeCardProps {

@@ -8,8 +8,9 @@ const IngredientSchema = new mongoose.Schema({
 const RecipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   imageUrl: { type: String, required: true },
-  ingredients: [IngredientSchema], // Ingredients as objects (name + image)
-  instructions: { type: [String], required: true }, // Array of instruction steps
+  spoonId: { type: String, required: false },
+  ingredients: [{ type: String, required: true }], // Change to array of strings
+  instructions: { type: [String], required: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
