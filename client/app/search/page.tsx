@@ -114,7 +114,7 @@ export default function Home() {
             <RecipeCard
               key={recipe.id}
               recipe={{
-                id: recipe.id, // No need to use `_id`
+                _id: recipe.id, // No need to use `_id`
                 title: recipe.title,
                 imageUrl: recipe.image, // Ensure correct property
                 ingredients: [], // API doesn't provide this, so default to an empty array
