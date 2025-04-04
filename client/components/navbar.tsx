@@ -21,9 +21,8 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    router.push("/");
     setIsLoggedIn(false);
-    showAlert("Logged out", "You have been logged out successfully", "success");
+    window.location.href = "/"; // full reload
   };
 
   return (
