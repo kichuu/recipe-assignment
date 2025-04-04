@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import RecipeCard from "@/components/recipe-card";
 import { useAlert } from "@/lib/alert-context";
+import SavedRecipeCard from "@/components/savedrecipe-card";
 
 interface Recipe {
   _id: string;
@@ -73,7 +74,26 @@ export default function SavedRecipes() {
                   className="cursor-pointer"
                   onClick={() => router.push(`/search/${recipe.spoonId}`)}
                 >
-                  <RecipeCard recipe={recipe} saved />
+                  <SavedRecipeCard
+                    recipe={recipe}
+                    onUnsave={async () => {
+                      try {
+                        const token = localStorage.getItem("token");
+                        await axios.delete(
+                          `${NEXT_PUBLIC_API_BASE_URL}/recipes/${recipe._id}`,
+                          {
+                            headers: { Authorization: `Bearer ${token}` },
+                          }
+                        );
+                        setRecipes((prev) =>
+                          prev.filter((r) => r._id !== recipe._id)
+                        );
+                        showAlert("Success", "Recipe unsaved", "success");
+                      } catch (error) {
+                        showAlert("Error", "Failed to unsave recipe", "error");
+                      }
+                    }}
+                  />
                 </div>
               ))}
             </div>

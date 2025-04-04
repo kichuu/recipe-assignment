@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import RecipeCard from "@/components/recipe-card";
@@ -23,9 +23,29 @@ export default function Home() {
   const router = useRouter();
   const { showAlert } = useAlert();
 
+  // Fetch random recipes on mount
+  useEffect(() => {
+    fetchRandomRecipes();
+  }, []);
+
+  const fetchRandomRecipes = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${NEXT_PUBLIC_API_BASE_URL}/recipes/random?number=6`
+      );
+      console.log(response.data);
+
+      setRecipes(response.data || []);
+    } catch (error) {
+      showAlert("Error", "Failed to fetch random recipes.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const searchRecipes = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!searchTerm.trim()) return;
 
     setLoading(true);
@@ -33,8 +53,6 @@ export default function Home() {
       const response = await axios.get(
         `${NEXT_PUBLIC_API_BASE_URL}/recipes/search?query=${searchTerm}`
       );
-
-      // API returns an array, no need to access `results`
       setRecipes(response.data || []);
     } catch (error) {
       showAlert(
@@ -67,7 +85,6 @@ export default function Home() {
         return;
       }
 
-      // Check if the recipe is already saved (avoid duplicate saves)
       const savedRecipes = JSON.parse(
         localStorage.getItem("savedRecipes") || "[]"
       );
@@ -92,12 +109,10 @@ export default function Home() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Save recipe locally to prevent duplicate saves
       localStorage.setItem(
         "savedRecipes",
         JSON.stringify([...savedRecipes, recipe])
       );
-
       showAlert("Success", "Recipe saved successfully!", "success");
     } catch (error) {
       console.error("Save Recipe Error:", error);
@@ -135,11 +150,11 @@ export default function Home() {
             <RecipeCard
               key={recipe.id}
               recipe={{
-                _id: recipe.id, // No need to use `_id`
+                _id: recipe.id,
                 title: recipe.title,
-                imageUrl: recipe.image, // Ensure correct property
-                ingredients: [], // API doesn't provide this, so default to an empty array
-                instructions: "", // API doesn't provide this, so default to an empty string
+                imageUrl: recipe.image,
+                ingredients: [],
+                instructions: [],
               }}
               onSave={() => saveRecipe(recipe)}
             />
