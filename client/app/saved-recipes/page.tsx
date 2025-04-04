@@ -13,7 +13,7 @@ interface Recipe {
   imageUrl: string;
   spoonId: number;
   ingredients: string[];
-  instructions: string[]; // Changed from string to string[]
+  instructions: string[];
 }
 
 export default function SavedRecipes() {
@@ -22,21 +22,41 @@ export default function SavedRecipes() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { showAlert } = useAlert();
-  const token = localStorage.getItem("token");
-  if (!token) {
-    showAlert(
-      "Authentication required",
-      "Please login to view saved recipes",
-      "info"
-    );
 
-    // Delay redirection slightly to let alert show
-    setTimeout(() => {
-      router.push("/login");
-    }, 500);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showAlert(
+        "Authentication required",
+        "Please login to view saved recipes",
+        "info"
+      );
 
-    return;
-  }
+      setTimeout(() => {
+        router.push("/login");
+      }, 500);
+      return;
+    }
+
+    // If token exists, fetch saved recipes
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get(
+          `${NEXT_PUBLIC_API_BASE_URL}/recipes/user`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setRecipes(response.data);
+      } catch (error) {
+        showAlert("Error", "Failed to fetch saved recipes", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, [router, showAlert, NEXT_PUBLIC_API_BASE_URL]);
 
   return (
     <div className="container mx-auto px-4 py-8">

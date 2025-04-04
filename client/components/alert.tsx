@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { AlertCircle, CheckCircle, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { AlertCircle, CheckCircle, X } from "lucide-react";
 
 interface AlertProps {
-  title: string
-  message: string
-  type: "success" | "error" | "info"
-  onClose?: () => void
-  autoClose?: boolean
-  duration?: number
+  title: string;
+  message: string;
+  type: "success" | "error" | "info";
+  onClose?: () => void;
+  autoClose?: boolean;
+  duration?: number;
 }
 
 export default function Alert({
@@ -18,22 +18,22 @@ export default function Alert({
   type = "info",
   onClose,
   autoClose = true,
-  duration = 5000,
+  duration = 2000,
 }: AlertProps) {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     if (autoClose) {
       const timer = setTimeout(() => {
-        setIsVisible(false)
-        if (onClose) onClose()
-      }, duration)
+        setIsVisible(false);
+        if (onClose) onClose();
+      }, duration);
 
-      return () => clearTimeout(timer)
+      return () => clearTimeout(timer);
     }
-  }, [autoClose, duration, onClose])
+  }, [autoClose, duration, onClose]);
 
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
     <div
@@ -46,7 +46,9 @@ export default function Alert({
     >
       <div className="flex items-start">
         <div className="flex-shrink-0">
-          {type === "success" && <CheckCircle className="h-5 w-5 text-green-500" />}
+          {type === "success" && (
+            <CheckCircle className="h-5 w-5 text-green-500" />
+          )}
           {type === "error" && <AlertCircle className="h-5 w-5 text-red-500" />}
           {type === "info" && <AlertCircle className="h-5 w-5 text-blue-500" />}
         </div>
@@ -75,13 +77,25 @@ export default function Alert({
             <button
               type="button"
               onClick={() => {
-                setIsVisible(false)
-                if (onClose) onClose()
+                setIsVisible(false);
+                if (onClose) onClose();
               }}
               className={`inline-flex rounded-md p-1.5
-                ${type === "success" ? "bg-green-50 text-green-500 hover:bg-green-100" : ""}
-                ${type === "error" ? "bg-red-50 text-red-500 hover:bg-red-100" : ""}
-                ${type === "info" ? "bg-blue-50 text-blue-500 hover:bg-blue-100" : ""}
+                ${
+                  type === "success"
+                    ? "bg-green-50 text-green-500 hover:bg-green-100"
+                    : ""
+                }
+                ${
+                  type === "error"
+                    ? "bg-red-50 text-red-500 hover:bg-red-100"
+                    : ""
+                }
+                ${
+                  type === "info"
+                    ? "bg-blue-50 text-blue-500 hover:bg-blue-100"
+                    : ""
+                }
               `}
             >
               <span className="sr-only">Dismiss</span>
@@ -91,6 +105,5 @@ export default function Alert({
         </div>
       </div>
     </div>
-  )
+  );
 }
-
