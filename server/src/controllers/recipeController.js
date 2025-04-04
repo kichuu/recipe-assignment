@@ -2,9 +2,30 @@ import axios from "axios";
 import Recipe from "../models/Recipe.js";
 import User from "../models/User.js";
 
-/**
- * Search for recipes using Spoonacular API.
- */
+export const getRandomRecipes = async (req, res) => {
+  try {
+    const number = req.query.number || 6;
+    console.log(number);
+    console.log(req.query);
+    const response = await axios.get(
+      `https://api.spoonacular.com/recipes/random`,
+      {
+        params: { apiKey: process.env.SPOONACULAR_API_KEY, number },
+      }
+    );
+    const formattedRecipes = response.data.recipes.map((recipe) => ({
+      id: recipe.id,
+      title: recipe.title,
+      image: recipe.image,
+    }));
+    console.log(formattedRecipes);
+    res.json(formattedRecipes);
+  } catch (error) {
+    console.log("Error getting recipes", error.message);
+    res.json({ error: "error failed to fetch recipes" });
+  }
+};
+
 export const searchRecipes = async (req, res) => {
   try {
     console.log("Search Query:", req.query);
@@ -121,6 +142,39 @@ export const saveRecipe = async (req, res) => {
   } catch (error) {
     console.error("Error saving recipe:", error);
     res.status(500).json({ error: "Failed to save recipe" });
+  }
+};
+
+export const deleteSavedRecipes = async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    console.log("recipeId", recipeId);
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Unauthorized. Please log in." });
+    }
+
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    if (recipe.createdBy.toString() !== req.user.userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not allowed to delete this recipe" });
+    }
+
+    // Delete the recipe
+    await Recipe.findByIdAndDelete(recipeId);
+
+    await User.findByIdAndUpdate(req.user.userId, {
+      $pull: { savedRecipes: recipeId },
+    });
+
+    res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    res.status(500).json({ error: "Failed to delete recipe" });
   }
 };
 
