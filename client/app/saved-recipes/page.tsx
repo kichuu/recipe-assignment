@@ -22,39 +22,21 @@ export default function SavedRecipes() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { showAlert } = useAlert();
+  const token = localStorage.getItem("token");
+  if (!token) {
+    showAlert(
+      "Authentication required",
+      "Please login to view saved recipes",
+      "info"
+    );
 
-  useEffect(() => {
-    const fetchSavedRecipes = async () => {
-      const token = localStorage.getItem("token");
+    // Delay redirection slightly to let alert show
+    setTimeout(() => {
+      router.push("/login");
+    }, 500);
 
-      if (!token) {
-        showAlert(
-          "Authentication required",
-          "Please login to view saved recipes",
-          "info"
-        );
-        router.push("/login");
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `${NEXT_PUBLIC_API_BASE_URL}/recipes/user`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("data", response.data);
-        setRecipes(response.data);
-      } catch (error) {
-        showAlert("Error", "Failed to fetch saved recipes", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSavedRecipes();
-  }, [router, showAlert]);
+    return;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
